@@ -1,0 +1,16 @@
+.wrapper {
+    background: var(--ion-color-primary);
+    display: grid;
+    height: 100%;
+    align-items: center;
+    justify-items: center;
+
+    ion-card {
+        --background: var(--ion-color-primary);
+        box-shadow: none !important;
+    }
+
+    ion-row {
+        width: 350px;
+    }
+}

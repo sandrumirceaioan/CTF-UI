@@ -1,0 +1,47 @@
+.wrapper {
+    background: var(--ion-color-light);
+    height: 100%;
+
+    ion-grid {
+        display: flex;
+        height: 100%;
+        align-items: center;
+        justify-content: center;
+
+        ion-row {
+            width: 100%;
+            ion-card {
+                box-shadow: none !important;
+            }
+        }
+
+        ion-card {
+            ion-item {
+                border-radius: 10px !important;
+
+                ion-input {
+                    
+                }
+
+                .eye-button {
+                    height:50px;
+                }
+            }
+
+            .remember-me {
+                --ripple-color: transparent;
+                --background-activated: transparent;
+                --background-activated-opacity:transparent;
+                --background-focused: transparent;
+                --background-focused-opacity:transparent;
+                --background-hover  : transparent;
+                --background-hover-opacity  :transparent;
+
+               ion-checkbox {
+                margin: 0px 10px 0 0;
+               }
+
+            }
+        }
+    }
+}
