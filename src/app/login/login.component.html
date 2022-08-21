@@ -1,13 +1,13 @@
-<div class="wrapper">
+<div class="auth-wrapper">
    <ion-grid>
       <ion-row>
          <ion-col size-sm="8" offset-sm="2" size-md="6" offset-md="3" size-lg="4" offset-lg="4" class="main-column">
             <ion-card color="none">
-               <ion-card-header color="none" class="ion-margin">
-                  <h1>
-                     <ion-text>LOGIN</ion-text>
-                  </h1>
-                  <img src="assets/images/ctf-logo-color-medium.png">
+               <ion-card-header color="primary" class="ion-margin ion-text-center">
+                  <img src="assets/images/ctf-logo-white-medium.png">
+                  <h3>
+                     <ion-text color="light">Email si parolă <strong>frate</strong>...</ion-text>
+                  </h3>
 
                </ion-card-header>
                <ion-card-content>
@@ -18,7 +18,7 @@
                         <ion-input type="text" name="email" formControlName="email" type="email"></ion-input>
                      </ion-item>
                      <ion-item lines="none" class="ion-margin-vertical">
-                        <ion-label position="floating">Password</ion-label>
+                        <ion-label position="floating">Parola</ion-label>
                         <ion-input type="password" name="password" formControlName="password"
                            [type]="showPasswordText ? 'text' : 'password'"></ion-input>
                         <ion-button class="eye-button" slot="end" fill="clear"
@@ -29,30 +29,43 @@
                      </ion-item>
 
                      <ion-row>
-                        <ion-col class="ion-text-start">
-                           <ion-item lines="none" color="none" class="remember-me">
-                              <ion-label>Remember me</ion-label>
-                              <ion-checkbox name="remember" slot="start" formControlName="remember"></ion-checkbox>
+                        <ion-col class="ion-text-start ion-padding">
+                           <ion-item lines="none" color="none" class="remember-me ion-no-padding">
+                              <ion-label color="dark">Ţine-mă minte</ion-label>
+                              <ion-checkbox color="primary" name="remember" slot="start" formControlName="remember">
+                              </ion-checkbox>
                            </ion-item>
                         </ion-col>
-                        <ion-col class="ion-text-end">
-                           <a class="small-text">Forgot Password?</a>
+                        <ion-col class="ion-padding-vertical">
+                           <ion-item lines="none" color="none" class="remember-me ion-no-padding ion-float-right">
+                              <a class="small-text ion-text-end" routerLink="/auth/forgot">
+                                 <ion-text color="primary">Reseteaza parola</ion-text>
+                              </a>
+                           </ion-item>
                         </ion-col>
                      </ion-row>
-                     <ion-row class="ion-padding-top">
+                     <ion-row>
                         <ion-col>
-                           <ion-button size="large" type="submit" color="primary" expand="block">Sign In</ion-button>
+                           <ion-button size="large" type="submit" color="primary" expand="block" [disabled]="!loginForm.valid">AUTENTIFICARE</ion-button>
                         </ion-col>
                      </ion-row>
                      <ion-row>
                         <ion-col>
                            <ion-button size="large" type="submit" color="tertiary" expand="block">
                               <ion-icon color="primary" name="logo-facebook" class="ion-padding"></ion-icon>
-                              <ion-text color="primary"> Sign In with Facebook</ion-text>
+                              <ion-text color="primary"> Autentificare cu Facebook</ion-text>
                            </ion-button>
                         </ion-col>
                      </ion-row>
-
+                     <ion-row>
+                        <ion-col class="ion-padding-vertical">
+                           <ion-item lines="none" color="none" class="remember-me ion-no-padding ion-float-right">
+                              <a class="small-text ion-text-end" routerLink="/auth/register">
+                                 <ion-text color="primary">Inregistreaza-te</ion-text>
+                              </a>
+                           </ion-item>
+                        </ion-col>
+                     </ion-row>
                   </form>
                </ion-card-content>
             </ion-card>

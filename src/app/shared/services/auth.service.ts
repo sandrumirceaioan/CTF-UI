@@ -3,9 +3,8 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { throwError, Observable, of } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
-import { Credentials } from '../models/user.model';
-import { AES } from 'crypto-js';
-
+import { Credentials, RegisterParams, ResetInitParams, ResetParams } from '../models/user.model';
+import { ToastService } from './toast.service';
 
 const httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -20,38 +19,63 @@ export class AuthService {
 
     constructor(
         private http: HttpClient,
+        private toastService: ToastService
     ) { }
 
     signIn(params: Credentials): Observable<any> {
         return this.http.post(`${this.apiPath}/auth/login`, params, httpOptions).pipe(
             map((result: any) => {
+                this.toastService.present('success', `Welcome ${result.user.email}`);
                 this.setToken(result.token);
-                localStorage.setItem('ctf_token', result.token);
                 this.user = result.user;
                 return result.user;
             }),
             catchError(error => {
+                this.toastService.present('error', error.error.message);
                 // this.toastr.error(error.error.message || error.error);
                 return throwError(() => error.error);
             })
         );
     }
 
-    signOut(): void {
-        this.user = null;
-        this.removeToken();
+    resetPasswordInit(params: ResetInitParams): Observable<any> {
+        return this.http.post(`${this.apiPath}/auth/reset-password-init`, params, httpOptions).pipe(
+            map((result: any) => {
+                this.toastService.present('success', `Pentru a finaliza resetarea parolei vetifica adresa de email si urmeaza instructiunile`, 10000);
+                return result;
+            }),
+            catchError(error => {
+                this.toastService.present('error', error.error.message);
+                return throwError(() => error.error);
+            })
+        );
     }
 
-    // register(user: User): Observable<any> {
-    //     return this.http.post(this.apiPath + '/auth/register', user, httpOptions).pipe(
-    //         map(result => {
-    //         }),
-    //         catchError(error => {
-    //             this.toastr.error(error.error.message || error.error);
-    //             return throwError(() => error.error);
-    //         })
-    //     )
-    // }
+    resetPassword(params: ResetParams): Observable<any> {
+        return this.http.post(`${this.apiPath}/auth/reset-password`, params, httpOptions).pipe(
+            map((result: any) => {
+                this.toastService.present('success', `Ai alta parola frate`);
+                return result;
+            }),
+            catchError(error => {
+                this.toastService.present('error', error.error.message);
+                return throwError(() => error.error);
+            })
+        );
+    }
+
+    registerUser(user: RegisterParams): Observable<any> {
+        return this.http.post(this.apiPath + '/auth/register', user, httpOptions).pipe(
+            map(result => {
+                this.toastService.present('success', `Inregistrat cu succes`);
+                return result;
+            }),
+            catchError(error => {
+                this.toastService.present('error', error.error.message);
+                return throwError(() => error.error);
+            })
+        )
+    }
 
     // verify(): Observable<any> {
     //     let id = localStorage.getItem('userId');
@@ -67,6 +91,11 @@ export class AuthService {
     //     );
     // }
 
+    signOut(): void {
+        this.user = null;
+        this.removeToken();
+    }
+
     public getToken(): any {
         return localStorage.getItem('ctf_token');
     }
@@ -77,21 +106,5 @@ export class AuthService {
 
     public removeToken() {
         localStorage.removeItem('ctf_token');
-    }
-
-    public setRemember(login) {
-        login.password = AES.encrypt(login.password, environment.CRYPTO_KEY);
-        localStorage.setItem('ctf_remember', JSON.stringify(login));
-    }
-
-    public getRemember(): any {
-        let login = JSON.parse(localStorage.getItem('ctf_remember'));
-        console.log(login);
-        if (login) {
-            login.password = AES.decrypt(login.password, environment.CRYPTO_KEY);
-            return login;
-        } else {
-            return null;
-        }
     }
 }

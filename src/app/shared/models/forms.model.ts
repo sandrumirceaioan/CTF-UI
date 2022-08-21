@@ -5,3 +5,23 @@ export interface LoginForm {
     password?: FormControl<string | null>;
     remember?: FormControl<boolean | null>;
 }
+
+export interface ResetInitForm {
+    email: FormControl<string | null>;
+}
+
+export interface ResetForm {
+    token?: FormControl<string | null>;
+    password: FormControl<string | null>;
+    passwordRepeat: FormControl<string | null>;
+}
+
+export interface RegisterForm {
+    firstName: FormControl<string | null>;
+    lastName: FormControl<string | null>;
+    birthDate: FormControl<string | null>;
+    gender: FormControl<string | null>;
+    email: FormControl<string | null>;
+    password: FormControl<string | null>;
+    passwordRepeat: FormControl<string | null>;
+}

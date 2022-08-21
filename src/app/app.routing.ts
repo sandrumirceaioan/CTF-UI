@@ -1,6 +1,4 @@
 import { Routes } from "@angular/router";
-import { LoginComponent } from "./login/login.component";
-import { WelcomeComponent } from "./welcome/welcome.component";
 
 export const APP_ROUTES: Routes = [
   {
@@ -10,17 +8,18 @@ export const APP_ROUTES: Routes = [
   },
   {
     path: 'welcome',
-    component: WelcomeComponent
+    loadComponent: () => import('./welcome/welcome.component').then((x) => x.WelcomeComponent),
   },
   {
-    path: 'login',
-    component: LoginComponent
+    path: 'auth',
+    loadChildren: () => import('./auth/auth.routes').then((x) => x.AuthRoutes),
   },
   {
-    path: 'admin', loadChildren: () => import('./admin/admin.routing').then(mod => mod.ADMIN_ROUTES)
+    path: 'app',
+    loadChildren: () => import('./ctf/ctf.routes').then((x) => x.CtfRoutes)
   },
   {
     path: '**',
-    component: LoginComponent
+    redirectTo: 'welcome'
   }
 ];

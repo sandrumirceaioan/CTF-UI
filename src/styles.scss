@@ -7,7 +7,7 @@
 @import "~@ionic/angular/css/normalize.css";
 @import "~@ionic/angular/css/structure.css";
 @import "~@ionic/angular/css/typography.css";
-@import '~@ionic/angular/css/display.css';
+@import "~@ionic/angular/css/display.css";
 
 /* Optional CSS utils that can be commented out */
 @import "~@ionic/angular/css/padding.css";
@@ -18,3 +18,55 @@
 
 /* Variables */
 @import "./theme/variables.scss";
+
+.auth-wrapper {
+    background: var(--ion-color-light);
+    height: 100%;
+
+    ion-grid {
+        display: flex;
+        height: 100%;
+        align-items: center;
+        justify-content: center;
+
+        ion-row {
+            width: 100%;
+            ion-card {
+                box-shadow: none !important;
+            }
+        }
+
+        ion-card {
+            max-width: 500px;
+            margin: 0 auto;
+
+            ion-card-header {
+                border-top-left-radius: 10px;
+                border-top-right-radius: 10px;
+            }
+
+            ion-item {
+                border-radius: 10px !important;
+
+                .eye-button {
+                    height: 50px;
+                }
+
+                ion-checkbox {
+                    margin: 0px 10px 0 0;
+                }
+            }
+
+            .remember-me {
+                --ripple-color: transparent !important;
+            }
+
+            ion-text {
+                ion-icon {
+                    margin: 0px 0px -3px 0px;
+                }
+            }
+
+        }
+    }
+}

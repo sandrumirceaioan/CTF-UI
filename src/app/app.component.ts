@@ -1,8 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component, EnvironmentInjector } from '@angular/core';
-import { RouteReuseStrategy, RouterModule } from '@angular/router';
+import { Component } from '@angular/core';
+import { ChildrenOutletContexts, RouteReuseStrategy, RouterModule } from '@angular/router';
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
-import { LoginComponent } from './login/login.component';
 
 @Component({
   selector: 'app-root',
@@ -11,7 +10,6 @@ import { LoginComponent } from './login/login.component';
     CommonModule,
     RouterModule,
     IonicModule,
-    LoginComponent
   ],
   providers: [{
     provide: RouteReuseStrategy, useClass: IonicRouteStrategy
@@ -21,6 +19,8 @@ import { LoginComponent } from './login/login.component';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  constructor(public environmentInjector: EnvironmentInjector) {}
+  constructor(
+    private contexts: ChildrenOutletContexts
+  ) {}
   title = 'ctf';
 }

@@ -2,12 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IonicModule } from '@ionic/angular';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { LoginForm } from '../shared/models/forms.model';
-import { AuthService } from '../shared/services/auth.service';
 import { Router, RouterModule } from '@angular/router';
+import { ResetInitForm } from '../shared/models/forms.model';
+import { AuthService } from '../shared/services/auth.service';
 
 @Component({
-  selector: 'app-login',
+  selector: 'app-forgot',
   standalone: true,
   imports: [
     CommonModule,
@@ -15,16 +15,14 @@ import { Router, RouterModule } from '@angular/router';
     RouterModule,
     ReactiveFormsModule
   ],
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss']
+  templateUrl: './forgot.component.html',
+  styleUrls: ['./forgot.component.scss']
 })
-export class LoginComponent implements OnInit {
+export class ForgotComponent implements OnInit {
   showPasswordText: boolean = false;
-  remember: any = null;
-  loginForm = new FormGroup<LoginForm>({
+  showRPasswordText: boolean = false;
+  resetInitForm = new FormGroup<ResetInitForm>({
     email: new FormControl(null, [Validators.required, Validators.email]),
-    password: new FormControl(null, [Validators.required, Validators.minLength(8)]),
-    remember: new FormControl(null)
   });
 
   constructor(
@@ -35,9 +33,9 @@ export class LoginComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  logIn(): void {
-    this.authService.signIn({ email: this.loginForm.value.email, password: this.loginForm.value.password }).subscribe((result) => {
-      this.router.navigate(['/app']);
+  resetPasswordInit(): void {
+    this.authService.resetPasswordInit({ email: this.resetInitForm.value.email }).subscribe((result) => {
+      this.router.navigate(['/welcome']);
     });
   }
 
