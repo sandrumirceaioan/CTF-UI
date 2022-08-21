@@ -10,10 +10,10 @@ const express = require('express');
 const app = express();
 
 app.use(requireHTTPS);
-app.use(express.static('./dist/secret-app'));
+app.use(express.static('./dist/ctf'));
 
 app.get('/*', (req, res) =>
-    res.sendFile('index.html', { root: 'dist/ctf/' }),
+    res.sendFile('index.html', {root: 'dist/ctf/'}),
 );
 
 app.listen(process.env.PORT || 8080);
