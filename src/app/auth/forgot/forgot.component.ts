@@ -3,8 +3,8 @@ import { CommonModule } from '@angular/common';
 import { IonicModule } from '@ionic/angular';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
-import { ResetInitForm } from '../shared/models/forms.model';
-import { AuthService } from '../shared/services/auth.service';
+import { ResetInitForm } from '../../shared/models/forms.model';
+import { AuthService } from '../../shared/services/auth.service';
 
 @Component({
   selector: 'app-forgot',

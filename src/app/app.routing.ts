@@ -16,9 +16,9 @@ export const APP_ROUTES: Routes = [
     loadChildren: () => import('./auth/auth.routes').then((x) => x.AuthRoutes),
   },
   {
-    path: 'app',
-    loadChildren: () => import('./ctf/ctf.routes').then((x) => x.CtfRoutes),
-    canActivate: [AuthGuard]
+    path: 'user',
+    loadChildren: () => import('./user/user.routes').then((x) => x.UserRoutes),
+    canActivateChild: [AuthGuard]
   },
   {
     path: '**',

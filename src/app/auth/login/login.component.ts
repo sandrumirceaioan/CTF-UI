@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IonicModule } from '@ionic/angular';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { LoginForm } from '../shared/models/forms.model';
-import { AuthService } from '../shared/services/auth.service';
+import { LoginForm } from '../../shared/models/forms.model';
+import { AuthService } from '../../shared/services/auth.service';
 import { Router, RouterModule } from '@angular/router';
 
 @Component({
@@ -41,7 +41,7 @@ export class LoginComponent implements OnInit {
       password: this.loginForm.value.password,
       remember: this.loginForm.value.remember,
     }).subscribe((result) => {
-      this.router.navigate(['/app']);
+      this.router.navigate(['/user']);
     });
   }
 

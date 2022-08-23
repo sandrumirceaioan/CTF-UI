@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { CtfComponent } from './ctf.component';
+import { DashboardComponent } from './dashboard.component';
 
-describe('CtfComponent', () => {
-  let component: CtfComponent;
-  let fixture: ComponentFixture<CtfComponent>;
+describe('DashboardComponent', () => {
+  let component: DashboardComponent;
+  let fixture: ComponentFixture<DashboardComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ CtfComponent ]
+      imports: [ DashboardComponent ]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(CtfComponent);
+    fixture = TestBed.createComponent(DashboardComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

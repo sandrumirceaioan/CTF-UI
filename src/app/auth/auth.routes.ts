@@ -8,19 +8,19 @@ export const AuthRoutes: Routes = [
     },
     {
         path: 'login',
-        loadComponent: () => import('../login/login.component').then((x) => x.LoginComponent),
+        loadComponent: () => import('./login/login.component').then((x) => x.LoginComponent),
     },
     {
         path: 'register',
-        loadComponent: () => import('../register/register.component').then((x) => x.RegisterComponent),
+        loadComponent: () => import('./register/register.component').then((x) => x.RegisterComponent),
     },
     {
         path: 'forgot',
-        loadComponent: () => import('../forgot/forgot.component').then((x) => x.ForgotComponent),
+        loadComponent: () => import('./forgot/forgot.component').then((x) => x.ForgotComponent),
     },
     {
         path: 'reset/:token',
-        loadComponent: () => import('../reset/reset.component').then((x) => x.ResetComponent),
+        loadComponent: () => import('./reset/reset.component').then((x) => x.ResetComponent),
     },
 
 ];

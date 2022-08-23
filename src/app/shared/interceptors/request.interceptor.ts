@@ -18,7 +18,8 @@ export class RequestInterceptor implements HttpInterceptor {
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
 
-    const token = this.authService.getToken('ctf_at') || null;
+    let token = this.authService.getToken('ctf_at') || null;
+    if (!token) token = this.authService.getToken('ctf_rt');
 
     if (token) {
       request = request.clone({

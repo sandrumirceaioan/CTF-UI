@@ -1,56 +1,50 @@
 import { Injectable } from '@angular/core';
-import { Router, CanMatch, Route, CanActivate } from '@angular/router';
-import { Observable, of } from 'rxjs';
-import { map, catchError, take } from 'rxjs/operators';
+import { Router, Route, CanActivateChild } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 import { JwtHelperService } from '@auth0/angular-jwt';
-import { HttpClient } from '@angular/common/http';
 
 @Injectable()
-export class AuthGuard implements CanActivate {
+export class AuthGuard implements CanActivateChild {
     public jwtHelper: JwtHelperService = new JwtHelperService();
 
     constructor(
         private authService: AuthService,
-        private router: Router,
-        private http: HttpClient
+        private router: Router
     ) {
     }
 
-    async canActivate(route: Route): Promise<boolean> {
-        console.log('AUTH GUARD');
+    async canActivateChild(route: Route): Promise<boolean> {
+        // allow activate if acces token exists and not expired
         const accessToken = this.authService.getToken('ctf_at');
-
         if (accessToken && !this.jwtHelper.isTokenExpired(accessToken)) {
             return true;
+        } else {
+            this.authService.removeToken('ctf_at');
         }
 
+        // prevent activate if refresh token is missing 
+        const refreshToken: string | null = this.authService.getToken('ctf_rt');
+        if (!refreshToken) {
+            this.router.navigate(['/auth/login']);
+            return false;
+        }
+
+        // get new pair of access token and refresh token
         try {
-            let response = await this.getRefreshToken(accessToken);
-            if (response.tokens && response.tokens.accessToken && response.tokens.refreshToken) {
-                console.log('REFRESH TOKENS: ', response.tokens);
-                const newAccessToken = (<any>response).tokens.accessToken;
-                const newRefreshToken = (<any>response).tokens.refreshToken;
-                this.authService.setToken('ctf_at', newAccessToken);
-                this.authService.setToken('ctf_rt', newRefreshToken);
+            const tokens = await this.authService.refresh(refreshToken);
+            if (tokens && tokens.access_token && tokens.refresh_token) {
+                console.log('REFRESHED');
                 return true;
             } else {
-                console.log('NO GET TOKENS');
+                console.log('NOT REFRESHED');
+                this.router.navigate(['/auth/login']);
                 return false;
             }
         } catch (error) {
-            console.log('ERR GET TOKENS ', error);
+            console.log('EXPIRED');
+            this.router.navigate(['/auth/login']);
             return false;
         }
     }
 
-    private async getRefreshToken(accessToken: string | null): Promise<any> {
-        const refreshToken: string | null = this.authService.getToken('ctf_rt');
-
-        if (!accessToken || !refreshToken) {
-            return false;
-        }
-
-        return await this.authService.refresh(refreshToken);
-    }
 }

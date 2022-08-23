@@ -3,8 +3,8 @@ import { CommonModule } from '@angular/common';
 import { IonicModule } from '@ionic/angular';
 import { Router, RouterModule } from '@angular/router';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { RegisterForm, ResetForm } from '../shared/models/forms.model';
-import { AuthService } from '../shared/services/auth.service';
+import { RegisterForm, ResetForm } from '../../shared/models/forms.model';
+import { AuthService } from '../../shared/services/auth.service';
 
 @Component({
   selector: 'app-register',

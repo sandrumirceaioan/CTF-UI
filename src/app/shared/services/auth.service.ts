@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { throwError, Observable, of, firstValueFrom, EmptyError } from 'rxjs';
-import { map, catchError } from 'rxjs/operators';
+import { throwError, Observable, of, firstValueFrom, EmptyError, lastValueFrom } from 'rxjs';
+import { map, catchError, tap, first } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { Credentials, RegisterParams, ResetInitParams, ResetParams } from '../models/user.model';
 import { ToastService } from './toast.service';
@@ -79,11 +79,29 @@ export class AuthService {
     }
 
     refresh(refreshToken: string): Promise<any> {
-        return firstValueFrom(this.http.post(`${this.apiPath}/auth/local/refresh`, { refreshToken }, httpOptions).pipe(map((result: any) => result), catchError(error => { return throwError(() => error.error); }))).catch((error: EmptyError) => {
-            console.log('Intra aici');
-            this.toastService.present('error', error.message);
-            return error;
-        });
+        return new Promise((resolve, reject) => {
+            this.http.post(`${this.apiPath}/auth/local/refresh`, { refreshToken }, httpOptions).pipe(
+                first(),
+                map((result: any) => {
+                    this.setToken('ctf_at', result.tokens.access_token);
+                    this.setToken('ctf_rt', result.tokens.refresh_token);
+                    this.user = result.user;
+                    return result.tokens;
+                }),
+                catchError((error: any) => {
+                    this.toastService.present('error', error.error.message);
+                    return throwError(() => error.error);
+                })
+            ).subscribe({
+                next: (tokens) => {
+                    resolve(tokens);
+                },
+                error: (error) => {
+                    reject(error);
+                }
+            });
+
+        })
     }
 
     signOut(): void {
