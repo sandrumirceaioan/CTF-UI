@@ -1,4 +1,5 @@
 import { Routes } from "@angular/router";
+import { AuthGuard } from "./shared/guards/auth.guard";
 
 export const APP_ROUTES: Routes = [
   {
@@ -16,7 +17,8 @@ export const APP_ROUTES: Routes = [
   },
   {
     path: 'app',
-    loadChildren: () => import('./ctf/ctf.routes').then((x) => x.CtfRoutes)
+    loadChildren: () => import('./ctf/ctf.routes').then((x) => x.CtfRoutes),
+    canActivate: [AuthGuard]
   },
   {
     path: '**',

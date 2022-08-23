@@ -36,7 +36,11 @@ export class LoginComponent implements OnInit {
   }
 
   logIn(): void {
-    this.authService.signIn({ email: this.loginForm.value.email, password: this.loginForm.value.password }).subscribe((result) => {
+    this.authService.signIn({
+      email: this.loginForm.value.email,
+      password: this.loginForm.value.password,
+      remember: this.loginForm.value.remember,
+    }).subscribe((result) => {
       this.router.navigate(['/app']);
     });
   }

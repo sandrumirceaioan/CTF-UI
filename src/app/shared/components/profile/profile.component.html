@@ -1,0 +1,138 @@
+<div class="header pb-6">
+    <div class="container-fluid">
+        <div class="header-body">
+            <div class="row align-items-center py-4">
+                <div class="col-lg-6 col-7">
+                    <h6 class="h2 d-inline-block mb-0">Profile</h6>
+
+                    <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+                        <ol class="breadcrumb breadcrumb-links">
+                            <li class="breadcrumb-item">
+                                <a href="javascript:void(0)">
+                                    <fa-icon [icon]="['fas', 'users']"></fa-icon>
+                                </a>
+                            </li>
+                            <li class="breadcrumb-item">
+                                <a> User Profile </a>
+                            </li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container-fluid">
+    <div class="row" *ngIf="currentUser">
+        <div class="col-xl-4 order-xl-2">
+            <div class="card card-profile">
+                <div class="row justify-content-center">
+                    <div class="col-lg-3 order-lg-2">
+                        <div class="card-profile-image">
+                            <a href="javascript:void(0)">
+                                <img class="rounded-circle" src="assets/img/user-img.jpg" />
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body pt-0 mt-6">
+                    <div class="text-center">
+                        <h5 class="h3">
+                            {{currentUser.firstName}} {{currentUser.lastName}}
+                        </h5>
+                        <div>
+                            <i class="ni education_hat mr-2"> </i> Role: {{currentUser.role}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-8 order-xl-1">
+            <div class="card">
+                <div class="card-header">
+                    <div class="row align-items-center">
+                        <div class="col-8">
+                            <h3 class="mb-0">Edit profile</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-body">
+                    <div class="pl-lg-4">
+                        <form [formGroup]="personalInfoForm">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-control-label" for="validationCustom03">
+                                            First Name
+                                        </label>
+                                        <input class="form-control" id="validationCustom03" placeholder="First Name"
+                                            autocomplete="off" type="text" value="{{currentUser.firstName}}"
+                                            formControlName="firstName" />
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-control-label" for="validationCustom03">
+                                            Last Name
+                                        </label>
+                                        <input class="form-control" id="validationCustom03" placeholder="Last Name"
+                                            autocomplete="off" required="" type="text" value="{{currentUser.lastName}}"
+                                            formControlName="lastName" />
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-control-label" for="validationCustom03">
+                                            Email address
+                                        </label>
+                                        <input class="form-control" id="validationCustom03" placeholder="Email address"
+                                            autocomplete="off" required="" type="email" value="{{currentUser.email}}"
+                                            formControlName="emailAddress" />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-control-label mt-3" for="validationCustom03">
+                                            Password
+                                        </label>
+                                        <input class="form-control" formControlName="password" id="validationCustom03"
+                                            placeholder="Password" required="" type="password"
+                                            [ngClass]="personalInfoForm.get('password')?.touched && personalInfoForm.get('password')?.errors ? 'is-invalid':''" />
+                                        <div class="invalid-feedback">
+                                            Please provide a password.
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-control-label mt-3" for="validationCustom03">
+                                            Password Confirmation
+                                        </label>
+                                        <input class="form-control" formControlName="passwordConfirmation"
+                                            id="validationCustom03" placeholder="Password Confirmation" required=""
+                                            type="password"
+                                            [ngClass]="(personalInfoForm.get('passwordConfirmation')?.touched && personalInfoForm.get('passwordConfirmation')?.errors) || !samePassword ? 'is-invalid':''" />
+                                        <div class="invalid-feedback">
+                                            Please enter the same password.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <button class="btn btn-primary" type="button" (click)="updateProfile()">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

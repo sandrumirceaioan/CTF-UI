@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { throwError, Observable, of } from 'rxjs';
+import { throwError, Observable, of, firstValueFrom, EmptyError } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { Credentials, RegisterParams, ResetInitParams, ResetParams } from '../models/user.model';
@@ -22,11 +22,25 @@ export class AuthService {
         private toastService: ToastService
     ) { }
 
+    registerUser(user: RegisterParams): Observable<any> {
+        return this.http.post(this.apiPath + '/auth/local/register', user, httpOptions).pipe(
+            map(result => {
+                this.toastService.present('success', `Inregistrat cu succes`);
+                return result;
+            }),
+            catchError(error => {
+                this.toastService.present('error', error.error.message);
+                return throwError(() => error.error);
+            })
+        )
+    }
+
     signIn(params: Credentials): Observable<any> {
-        return this.http.post(`${this.apiPath}/auth/login`, params, httpOptions).pipe(
+        return this.http.post(`${this.apiPath}/auth/local/login`, params, httpOptions).pipe(
             map((result: any) => {
                 this.toastService.present('success', `Welcome ${result.user.email}`);
-                this.setToken(result.token);
+                this.setToken('ctf_at', result.tokens.access_token);
+                this.setToken('ctf_rt', result.tokens.refresh_token);
                 this.user = result.user;
                 return result.user;
             }),
@@ -64,47 +78,29 @@ export class AuthService {
         );
     }
 
-    registerUser(user: RegisterParams): Observable<any> {
-        return this.http.post(this.apiPath + '/auth/register', user, httpOptions).pipe(
-            map(result => {
-                this.toastService.present('success', `Inregistrat cu succes`);
-                return result;
-            }),
-            catchError(error => {
-                this.toastService.present('error', error.error.message);
-                return throwError(() => error.error);
-            })
-        )
+    refresh(refreshToken: string): Promise<any> {
+        return firstValueFrom(this.http.post(`${this.apiPath}/auth/local/refresh`, { refreshToken }, httpOptions).pipe(map((result: any) => result), catchError(error => { return throwError(() => error.error); }))).catch((error: EmptyError) => {
+            console.log('Intra aici');
+            this.toastService.present('error', error.message);
+            return error;
+        });
     }
-
-    // verify(): Observable<any> {
-    //     let id = localStorage.getItem('userId');
-    //     return this.http.get(`${this.apiPath}/users/` + id, httpOptions).pipe(
-    //         map((result: any) => {
-    //             this.userInfo = result;
-    //             return result;
-    //         }),
-    //         catchError((error) => {
-    //             this.toastr.error(error.error.message || error.error);
-    //             return throwError(() => error.error);
-    //         })
-    //     );
-    // }
 
     signOut(): void {
         this.user = null;
-        this.removeToken();
+        this.removeToken('ctf_at');
+        this.removeToken('ctf_rt');
     }
 
-    public getToken(): any {
-        return localStorage.getItem('ctf_token');
+    public getToken(name): any {
+        return localStorage.getItem(name);
     }
 
-    public setToken(token: string) {
-        localStorage.setItem('ctf_token', token);
+    public setToken(name, token: string) {
+        localStorage.setItem(name, token);
     }
 
-    public removeToken() {
-        localStorage.removeItem('ctf_token');
+    public removeToken(name) {
+        localStorage.removeItem(name);
     }
 }

@@ -1,0 +1,46 @@
+<nav class="sidenav navbar navbar-vertical fixed-left navbar-expand-xs navbar-light bg-blue" id="sidenav-main"
+  (mouseover)="onMouseEnterSidenav()" (mouseout)="onMouseLeaveSidenav()">
+  <perfect-scrollbar>
+    <div class="scrollbar-inner">
+      <div class="sidenav-header d-flex align-items-center">
+        <a class="navbar-brand" [routerLink]="['/admin/dashboard']">
+          <img src="assets/img/logo.png" class="navbar-brand-img" alt="Bingo Leads" />
+        </a>
+        <div class="ml-auto">
+          <!-- Sidenav toggler -->
+          <div class="sidenav-toggler d-none d-xl-block" data-action="sidenav-unpin" data-target="#sidenav-main"
+            (click)="minimizeSidebar()">
+            <div class="sidenav-toggler-inner">
+              <i class="sidenav-toggler-line text-white"></i>
+              <i class="sidenav-toggler-line text-white"></i>
+              <i class="sidenav-toggler-line text-white"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="navbar-inner">
+        <div class="collapse navbar-collapse" id="sidenav-collapse-main">
+          <!-- Collapse header -->
+          <ul class="navbar-nav">
+            <li *ngFor="let menuitem of menuItems" class="nav-item">
+
+              <!--If is a single link-->
+              <a routerLinkActive="active" [routerLink]="[menuitem.path]" class="nav-link">
+                <fa-icon [icon]="['fas', menuitem.icon ]" class="nav-link-icon"></fa-icon>
+                <span class="nav-link-text text-white">{{ menuitem.title }}</span>
+              </a>
+
+              <!--If it have a submenu-->
+              <a data-toggle="collapse" routerLinkActive="active" *ngIf="menuitem.type === 'sub'"
+                (click)="menuitem.isCollapsed = !menuitem.isCollapsed" [attr.aria-expanded]="!menuitem.isCollapsed"
+                [attr.aria-controls]="menuitem.collapse" class="nav-link">
+                <fa-icon [icon]="['fas', menuitem.icon ]"></fa-icon>
+                <span class="nav-link-text">{{ menuitem.title }}</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </perfect-scrollbar>
+</nav>
