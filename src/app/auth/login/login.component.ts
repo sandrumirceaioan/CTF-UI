@@ -36,7 +36,7 @@ export class LoginComponent implements OnInit {
   }
 
   logIn(): void {
-    this.authService.signIn({
+    this.authService.login({
       email: this.loginForm.value.email,
       password: this.loginForm.value.password,
       remember: this.loginForm.value.remember,

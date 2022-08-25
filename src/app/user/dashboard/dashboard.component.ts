@@ -30,7 +30,7 @@ export class DashboardComponent implements OnInit {
         console.log('COMPONENT');
       },
       error: (error) => {
-        console.log(error);
+        //console.log(error);
       }
     });
   }

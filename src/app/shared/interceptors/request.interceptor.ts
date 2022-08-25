@@ -3,65 +3,61 @@ import {
   HttpInterceptor,
   HttpRequest,
   HttpHandler,
-  HttpEvent
+  HttpEvent,
+  HttpErrorResponse
 } from '@angular/common/http';
 
-import { catchError, first, Observable, switchMap, throwError } from 'rxjs';
+import { catchError, Observable, of, switchMap, throwError } from 'rxjs';
 import { AuthService } from '../services/auth.service';
 
 @Injectable()
 export class RequestInterceptor implements HttpInterceptor {
+  isRefresh: boolean = false;
 
-  constructor(
-    private authService: AuthService
-  ) { }
+  constructor(public authService: AuthService) { }
 
-  intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    console.log('INTERCEPT');
-    let token = this.authService.getToken('ctf_at') || null;
-    let requestClone = this.addTokenToHeader(request, token);
-    return next.handle(requestClone).pipe(
-      catchError(error => {
-        if (error.status === 401 && !this.freeRoute(requestClone.url)) {
-          console.log('AT EXPIRED');
-          return this.handleRefrehToken(request, next);
+  intercept(
+    request: HttpRequest<any>,
+    next: HttpHandler
+  ): Observable<HttpEvent<any>> {
+
+    if (this.authService.getAccessToken()) {
+      request = this.addToken(request, this.authService.getAccessToken());
+    }
+
+    return next.handle(request).pipe(
+      catchError((error) => {
+        if (error instanceof HttpErrorResponse && error.status === 401 && !this.noRefreshRoute(request.url)) {
+          return this.handle401Error(request, next);
+        } else {
+          return throwError(() => error);
         }
-        return throwError(() => error);
       })
     );
   }
 
-  handleRefrehToken(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    let token = this.authService.getToken('ctf_rt') || null;
-    console.log('REFRESH TRY');
-    return this.authService.getRefreshedTokens().pipe(
+  private handle401Error(request: HttpRequest<any>, next: HttpHandler) {
+    return this.authService.refreshToken().pipe(
       switchMap((result: any) => {
-        console.log('SWITCH: ', result);
-        this.authService.setToken('ctf_at', result.tokens.access_token);
-        this.authService.setToken('ctf_at', result.tokens.refresh_token);
-        console.log('RT OK');
-        return next.handle(this.addTokenToHeader(request, token));
+        return result ? next.handle(this.addToken(request, result.tokens.access_token)) : of(null);
       }),
-      catchError(error => {
-        console.log('RT EXPIRED');
-        this.authService.logout();
+      catchError((error: any) => {
         return throwError(() => error);
       })
     );
   }
 
-  addTokenToHeader(request: HttpRequest<any>, at: any) {
+  private addToken(request: HttpRequest<any>, token: string) {
     return request.clone({
       setHeaders: {
-        Authorization: `Bearer ${at}`
-      }
+        Authorization: `Bearer ${token}`,
+      },
     });
   }
 
-  freeRoute(url: string) {
-    const notProtected = ['login', 'register'];
+  private noRefreshRoute(url: string) {
+    const notRefresh = ['logout'];
     let urlSegment = url.split('/').pop().trim();
-    return notProtected.includes(urlSegment) ? true : false;
+    return notRefresh.includes(urlSegment) ? true : false;
   }
-
 }

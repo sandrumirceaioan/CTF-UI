@@ -5,6 +5,8 @@ import { map, catchError, tap, first } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { Credentials, RegisterParams, ResetInitParams, ResetParams } from '../models/user.model';
 import { ToastService } from './toast.service';
+import { Router } from '@angular/router';
+
 
 const httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -17,8 +19,12 @@ export class AuthService {
     apiPath: string = environment.BACKEND_URL;
     user: any = null;
 
+    private readonly ctf_at = "ctf_at";
+    private readonly ctf_rt = "ctf_rt";
+
     constructor(
         private http: HttpClient,
+        private router: Router,
         private toastService: ToastService
     ) { }
 
@@ -33,23 +39,6 @@ export class AuthService {
                 return throwError(() => error.error);
             })
         )
-    }
-
-    signIn(params: Credentials): Observable<any> {
-        return this.http.post(`${this.apiPath}/auth/local/login`, params, httpOptions).pipe(
-            map((result: any) => {
-                this.toastService.present('success', `Welcome ${result.user.email}`);
-                this.setToken('ctf_at', result.tokens.access_token);
-                this.setToken('ctf_rt', result.tokens.refresh_token);
-                this.user = result.user;
-                return result.user;
-            }),
-            catchError(error => {
-                this.toastService.present('error', error.error.message);
-                // this.toastr.error(error.error.message || error.error);
-                return throwError(() => error.error);
-            })
-        );
     }
 
     resetPasswordInit(params: ResetInitParams): Observable<any> {
@@ -78,34 +67,59 @@ export class AuthService {
         );
     }
 
-    refresh(refreshToken: string): Promise<any> {
-        return new Promise((resolve, reject) => {
-            this.http.post(`${this.apiPath}/auth/local/refresh`, { refreshToken }, httpOptions).pipe(
-                first(),
-                map((result: any) => {
-                    this.setToken('ctf_at', result.tokens.access_token);
-                    this.setToken('ctf_rt', result.tokens.refresh_token);
-                    this.user = result.user;
-                    return result.tokens;
-                }),
-                catchError((error: any) => {
-                    this.toastService.present('error', error.error.message);
-                    return throwError(() => error.error);
-                })
-            ).subscribe({
-                next: (tokens) => {
-                    resolve(tokens);
-                },
-                error: (error) => {
-                    reject(error);
-                }
-            });
 
-        })
+    login(params: Credentials): Observable<any> {
+        return this.http.post(`${this.apiPath}/auth/local/login`, params, httpOptions).pipe(
+            tap((response: any) => this.doLoginUser(response.user, response.tokens)),
+            map((result) => {
+                return result.user;
+            }),
+            catchError((error) => {
+                this.toastService.present('error', error.error.message);
+                return throwError(() => error.error);
+            })
+        );
     }
 
-    getRefreshedTokens(): Observable<any> {
-        return this.http.post(`${this.apiPath}/auth/local/refresh`, {}, httpOptions);
+    isLoggedIn() {
+        return !!this.getAccessToken();
+    }
+
+    refreshToken() {
+        return this.http.post<any>(`${this.apiPath}/auth/local/refresh`, { refreshToken: this.getRefreshToken() }).pipe(
+            tap((result) => {
+                this.storeTokens(result.tokens);
+            }),
+            catchError((error) => {
+                console.log('Intra aici');
+                console.log(error.error.message);
+                this.logout();
+                return of(false);
+            })
+        );
+    }
+
+    getAccessToken() {
+        return localStorage.getItem(this.ctf_at);
+    }
+
+    private getRefreshToken() {
+        return localStorage.getItem(this.ctf_rt);
+    }
+
+    private doLoginUser(user?, tokens?) {
+        this.user = user;
+        this.storeTokens(tokens);
+    }
+
+    private storeTokens(tokens) {
+        localStorage.setItem(this.ctf_at, tokens.access_token);
+        localStorage.setItem(this.ctf_rt, tokens.refresh_token);
+    }
+
+    private removeTokens() {
+        localStorage.removeItem(this.ctf_at);
+        localStorage.removeItem(this.ctf_rt);
     }
 
     verifyAccessToken(): Observable<any> {
@@ -119,31 +133,19 @@ export class AuthService {
         );
     }
 
-    logout(): void {
+    logout() {
         this.http.post(`${this.apiPath}/auth/local/logout`, {}, httpOptions).pipe(
             map(() => {
                 this.user = null;
-                this.removeToken('ctf_at');
-                this.removeToken('ctf_rt');
+                this.removeTokens();
+                this.router.navigate(['/auth/login']);
                 console.log('LOGGED OUT');
                 return;
             }),
             catchError(error => {
-                this.toastService.present('error', error.error.message);
+                this.router.navigate(['/auth/login']);
                 return throwError(() => error.error);
             })
         ).subscribe();
-    }
-
-    public getToken(name): any {
-        return localStorage.getItem(name);
-    }
-
-    public setToken(name, token: string) {
-        localStorage.setItem(name, token);
-    }
-
-    public removeToken(name) {
-        localStorage.removeItem(name);
     }
 }
