@@ -24,14 +24,19 @@ export class DashboardComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  triggerRefresh(): void {
-    // this.authService.removeToken('ctf_at');
-    // this.authService.setToken('ctf_rt', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzMDUwN2RlNmZjMTkyMGJhZGJiNGQzOSIsInJvbGUiOiJ1c2VyIiwiZW1haWwiOiJzYW5kcnVtaXJjZWFpb2FuQGdtYWlsLmNvbSIsImlhdCI6MTY2MTI3OTI4NiwiZXhwIjoxNjYxMjgwMTg2fQ.D7RqVtZbSyD9EU5ppq11r_kgbtIZ2bKCyn0KFoPHMFs')
-    // this.authService.refresh().then(result => {
-    //   console.log(result);
-    // }).catch(error => {
-    //   console.log(error);
-    // });
+  verifyAccessToken(): void {
+    this.authService.verifyAccessToken().subscribe({
+      next: (result) => {
+        console.log('COMPONENT');
+      },
+      error: (error) => {
+        console.log(error);
+      }
+    });
+  }
+
+  logout(): void {
+    this.authService.logout();
   }
 
 }

@@ -104,10 +104,35 @@ export class AuthService {
         })
     }
 
-    signOut(): void {
-        this.user = null;
-        this.removeToken('ctf_at');
-        this.removeToken('ctf_rt');
+    getRefreshedTokens(): Observable<any> {
+        return this.http.post(`${this.apiPath}/auth/local/refresh`, {}, httpOptions);
+    }
+
+    verifyAccessToken(): Observable<any> {
+        return this.http.post(`${this.apiPath}/auth/local/verify`, {}, httpOptions).pipe(
+            map((result: any) => {
+                return result;
+            }),
+            catchError(error => {
+                return throwError(() => error.error);
+            })
+        );
+    }
+
+    logout(): void {
+        this.http.post(`${this.apiPath}/auth/local/logout`, {}, httpOptions).pipe(
+            map(() => {
+                this.user = null;
+                this.removeToken('ctf_at');
+                this.removeToken('ctf_rt');
+                console.log('LOGGED OUT');
+                return;
+            }),
+            catchError(error => {
+                this.toastService.present('error', error.error.message);
+                return throwError(() => error.error);
+            })
+        ).subscribe();
     }
 
     public getToken(name): any {
