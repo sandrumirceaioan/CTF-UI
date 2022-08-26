@@ -72,6 +72,7 @@ export class AuthService {
         return this.http.post(`${this.apiPath}/auth/local/login`, params, httpOptions).pipe(
             tap((response: any) => this.doLoginUser(response.user, response.tokens)),
             map((result) => {
+                this.toastService.present('success', `Welcome ${result.user.email}`);
                 return result.user;
             }),
             catchError((error) => {

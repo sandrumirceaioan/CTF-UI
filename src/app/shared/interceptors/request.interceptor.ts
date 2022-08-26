@@ -56,7 +56,7 @@ export class RequestInterceptor implements HttpInterceptor {
   }
 
   private noRefreshRoute(url: string) {
-    const notRefresh = ['logout'];
+    const notRefresh = ['login','logout'];
     let urlSegment = url.split('/').pop().trim();
     return notRefresh.includes(urlSegment) ? true : false;
   }
