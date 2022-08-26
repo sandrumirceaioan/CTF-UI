@@ -34,7 +34,7 @@ export class ForgotComponent implements OnInit {
   }
 
   resetPasswordInit(): void {
-    this.authService.resetPasswordInit({ email: this.resetInitForm.value.email }).subscribe((result) => {
+    this.authService.resetInit({ email: this.resetInitForm.value.email }).subscribe((result) => {
       this.router.navigate(['/welcome']);
     });
   }

@@ -37,7 +37,7 @@ export class RequestInterceptor implements HttpInterceptor {
   }
 
   private handle401Error(request: HttpRequest<any>, next: HttpHandler) {
-    return this.authService.refreshToken().pipe(
+    return this.authService.refresh().pipe(
       switchMap((result: any) => {
         return result ? next.handle(this.addToken(request, result.tokens.access_token)) : of(null);
       }),

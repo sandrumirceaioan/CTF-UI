@@ -13,7 +13,7 @@ export class AuthGuard implements CanActivate {
 
     async canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<boolean> {
         return new Promise((resolve) => {
-            this.authService.verifyAccessToken().subscribe((result) => resolve(result))
+            this.authService.verify().subscribe((result) => resolve(result))
         })
     }
 

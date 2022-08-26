@@ -25,7 +25,7 @@ export class DashboardComponent implements OnInit {
   }
 
   verifyAccessToken(): void {
-    this.authService.verifyAccessToken().subscribe({
+    this.authService.verify().subscribe({
       next: (result) => {
         console.log('COMPONENT');
       },

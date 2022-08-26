@@ -28,7 +28,7 @@ export class AuthService {
         private toastService: ToastService
     ) { }
 
-    registerUser(user: RegisterParams): Observable<any> {
+    register(user: RegisterParams): Observable<any> {
         return this.http.post(this.apiPath + '/auth/local/register', user, httpOptions).pipe(
             map(result => {
                 this.toastService.present('success', `Inregistrat cu succes`);
@@ -40,33 +40,6 @@ export class AuthService {
             })
         )
     }
-
-    resetPasswordInit(params: ResetInitParams): Observable<any> {
-        return this.http.post(`${this.apiPath}/auth/reset-password-init`, params, httpOptions).pipe(
-            map((result: any) => {
-                this.toastService.present('success', `Pentru a finaliza resetarea parolei vetifica adresa de email si urmeaza instructiunile`, 10000);
-                return result;
-            }),
-            catchError(error => {
-                this.toastService.present('error', error.error.message);
-                return throwError(() => error.error);
-            })
-        );
-    }
-
-    resetPassword(params: ResetParams): Observable<any> {
-        return this.http.post(`${this.apiPath}/auth/reset-password`, params, httpOptions).pipe(
-            map((result: any) => {
-                this.toastService.present('success', `Ai alta parola frate`);
-                return result;
-            }),
-            catchError(error => {
-                this.toastService.present('error', error.error.message);
-                return throwError(() => error.error);
-            })
-        );
-    }
-
 
     login(params: Credentials): Observable<any> {
         return this.http.post(`${this.apiPath}/auth/local/login`, params, httpOptions).pipe(
@@ -82,48 +55,7 @@ export class AuthService {
         );
     }
 
-    isLoggedIn() {
-        return !!this.getAccessToken();
-    }
-
-    refreshToken() {
-        return this.http.post<any>(`${this.apiPath}/auth/local/refresh`, { refreshToken: this.getRefreshToken() }).pipe(
-            tap((result) => {
-                this.storeTokens(result.tokens);
-            }),
-            catchError((error) => {
-                console.log('Intra aici');
-                console.log(error.error.message);
-                this.logout();
-                return of(null);
-            })
-        );
-    }
-
-    getAccessToken() {
-        return localStorage.getItem(this.ctf_at);
-    }
-
-    private getRefreshToken() {
-        return localStorage.getItem(this.ctf_rt);
-    }
-
-    private doLoginUser(user?, tokens?) {
-        this.user = user;
-        this.storeTokens(tokens);
-    }
-
-    private storeTokens(tokens) {
-        localStorage.setItem(this.ctf_at, tokens.access_token);
-        localStorage.setItem(this.ctf_rt, tokens.refresh_token);
-    }
-
-    private removeTokens() {
-        localStorage.removeItem(this.ctf_at);
-        localStorage.removeItem(this.ctf_rt);
-    }
-
-    verifyAccessToken(): Observable<any> {
+    verify(): Observable<any> {
         return this.http.post(`${this.apiPath}/auth/local/verify`, {}, httpOptions).pipe(
             tap((result: any) => {
                 return result;
@@ -149,5 +81,72 @@ export class AuthService {
                 return throwError(() => error.error);
             })
         ).subscribe();
+    }
+
+
+    refresh() {
+        return this.http.post<any>(`${this.apiPath}/auth/local/refresh`, { refreshToken: this.getRefreshToken() }).pipe(
+            tap((result) => {
+                this.storeTokens(result.tokens);
+            }),
+            catchError((error) => {
+                console.log('Intra aici');
+                console.log(error.error.message);
+                this.logout();
+                return of(null);
+            })
+        );
+    }
+
+
+    resetInit(params: ResetInitParams): Observable<any> {
+        return this.http.post(`${this.apiPath}/auth/local/reset-init`, params, httpOptions).pipe(
+            map((result: any) => {
+                this.toastService.present('success', `Pentru a finaliza resetarea parolei vetifica adresa de email si urmeaza instructiunile`, 10000);
+                return result;
+            }),
+            catchError(error => {
+                this.toastService.present('error', error.error.message);
+                return throwError(() => error.error);
+            })
+        );
+    }
+
+    resetComplete(params: ResetParams): Observable<any> {
+        return this.http.post(`${this.apiPath}/auth/local/reset-complete`, params, httpOptions).pipe(
+            map((result: any) => {
+                this.toastService.present('success', `Ai alta parola frate`);
+                return result;
+            }),
+            catchError(error => {
+                this.toastService.present('error', error.error.message);
+                return throwError(() => error.error);
+            })
+        );
+    }
+
+    // helpers
+
+    getAccessToken() {
+        return localStorage.getItem(this.ctf_at);
+    }
+
+    private getRefreshToken() {
+        return localStorage.getItem(this.ctf_rt);
+    }
+
+    private doLoginUser(user?, tokens?) {
+        this.user = user;
+        this.storeTokens(tokens);
+    }
+
+    private storeTokens(tokens) {
+        localStorage.setItem(this.ctf_at, tokens.access_token);
+        localStorage.setItem(this.ctf_rt, tokens.refresh_token);
+    }
+
+    private removeTokens() {
+        localStorage.removeItem(this.ctf_at);
+        localStorage.removeItem(this.ctf_rt);
     }
 }

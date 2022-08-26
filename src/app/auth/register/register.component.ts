@@ -42,7 +42,7 @@ export class RegisterComponent implements OnInit {
   }
 
   register(): void {
-    this.authService.registerUser({
+    this.authService.register({
       firstName: this.registerForm.value.firstName,
       lastName: this.registerForm.value.lastName,
       birthDate: this.registerForm.value.birthDate,

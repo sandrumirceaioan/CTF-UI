@@ -41,7 +41,7 @@ export class ResetComponent implements OnInit {
   }
 
   resetPassword(): void {
-    this.authService.resetPassword({
+    this.authService.resetComplete({
       token: this.resetForm.value.token,
       password: this.resetForm.value.password,
       passwordRepeat: this.resetForm.value.passwordRepeat
