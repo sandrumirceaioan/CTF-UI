@@ -1,21 +1,20 @@
 import { Injectable } from '@angular/core';
-import { Router, Route, CanActivateChild } from '@angular/router';
+import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 import { JwtHelperService } from '@auth0/angular-jwt';
 
 @Injectable()
-export class AuthGuard implements CanActivateChild {
+export class AuthGuard implements CanActivate {
     public jwtHelper: JwtHelperService = new JwtHelperService();
 
     constructor(
-        private authService: AuthService,
-        private router: Router
-    ) {
-    }
+        private authService: AuthService
+    ) { }
 
-    async canActivateChild(route: Route): Promise<boolean> {
-       
-        return true;
+    async canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<boolean> {
+        return new Promise((resolve) => {
+            this.authService.verifyAccessToken().subscribe((result) => resolve(result))
+        })
     }
 
 }

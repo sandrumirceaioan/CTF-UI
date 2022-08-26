@@ -95,7 +95,7 @@ export class AuthService {
                 console.log('Intra aici');
                 console.log(error.error.message);
                 this.logout();
-                return of(false);
+                return of(null);
             })
         );
     }
@@ -125,10 +125,11 @@ export class AuthService {
 
     verifyAccessToken(): Observable<any> {
         return this.http.post(`${this.apiPath}/auth/local/verify`, {}, httpOptions).pipe(
-            map((result: any) => {
+            tap((result: any) => {
                 return result;
             }),
             catchError(error => {
+                this.toastService.present('error', error.error.message);
                 return throwError(() => error.error);
             })
         );

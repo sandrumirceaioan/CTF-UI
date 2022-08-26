@@ -18,7 +18,7 @@ export const APP_ROUTES: Routes = [
   {
     path: 'user',
     loadChildren: () => import('./user/user.routes').then((x) => x.UserRoutes),
-    // canActivateChild: [AuthGuard]
+    canActivate: [AuthGuard]
   },
   {
     path: '**',
