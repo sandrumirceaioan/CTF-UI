@@ -1,12 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { throwError, Observable, of, firstValueFrom, EmptyError, lastValueFrom } from 'rxjs';
+import { throwError, Observable, of, firstValueFrom, EmptyError, lastValueFrom, Subject } from 'rxjs';
 import { map, catchError, tap, first } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
-import { Credentials, RegisterParams, ResetInitParams, ResetParams } from '../models/user.model';
+import { Credentials, LoginResponse, RegisterParams, ResetInitParams, ResetParams, User } from '../models/user.model';
 import { ToastService } from './toast.service';
 import { Router } from '@angular/router';
-
 
 const httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -17,7 +16,7 @@ const httpOptions = {
 })
 export class AuthService {
     apiPath: string = environment.BACKEND_URL;
-    user: any = null;
+    user$ = new Subject();
 
     private readonly ctf_at = "ctf_at";
     private readonly ctf_rt = "ctf_rt";
@@ -44,7 +43,7 @@ export class AuthService {
     login(params: Credentials): Observable<any> {
         return this.http.post(`${this.apiPath}/auth/local/login`, params, httpOptions).pipe(
             tap((response: any) => this.doLoginUser(response.user, response.tokens)),
-            map((result) => {
+            map((result: LoginResponse) => {
                 this.toastService.present('success', `Welcome ${result.user.email}`);
                 return result.user;
             }),
@@ -57,7 +56,8 @@ export class AuthService {
 
     verify(): Observable<any> {
         return this.http.post(`${this.apiPath}/auth/local/verify`, {}, httpOptions).pipe(
-            tap((result: any) => {
+            tap((result: User) => {
+                this.user$.next(result);
                 return result;
             }),
             catchError(error => {
@@ -70,7 +70,7 @@ export class AuthService {
     logout() {
         this.http.post(`${this.apiPath}/auth/local/logout`, {}, httpOptions).pipe(
             map(() => {
-                this.user = null;
+                this.user$.next(null);
                 this.removeTokens();
                 this.router.navigate(['/auth/login']);
                 console.log('LOGGED OUT');
@@ -136,7 +136,7 @@ export class AuthService {
     }
 
     private doLoginUser(user?, tokens?) {
-        this.user = user;
+        this.user$.next(user);
         this.storeTokens(tokens);
     }
 

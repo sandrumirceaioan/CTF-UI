@@ -19,8 +19,6 @@ import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  constructor(
-    private contexts: ChildrenOutletContexts
-  ) {}
+  constructor() {}
   title = 'ctf';
 }

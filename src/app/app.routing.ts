@@ -1,5 +1,6 @@
 import { Routes } from "@angular/router";
 import { AuthGuard } from "./shared/guards/auth.guard";
+import { RoleGuard } from "./shared/guards/role.guard";
 
 export const APP_ROUTES: Routes = [
   {
@@ -18,7 +19,14 @@ export const APP_ROUTES: Routes = [
   {
     path: 'user',
     loadChildren: () => import('./user/user.routes').then((x) => x.UserRoutes),
-    canActivate: [AuthGuard]
+    canActivate: [AuthGuard, RoleGuard],
+    data: { roles: ['user', 'admin'] }
+  },
+  {
+    path: 'admin',
+    loadChildren: () => import('./admin/admin.routes').then(m => m.AdminRoutes),
+    canActivate: [AuthGuard, RoleGuard],
+    data: { roles: ['admin'] }
   },
   {
     path: '**',

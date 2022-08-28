@@ -5,6 +5,7 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { LoginForm } from '../../shared/models/forms.model';
 import { AuthService } from '../../shared/services/auth.service';
 import { Router, RouterModule } from '@angular/router';
+import { User } from 'src/app/shared/models/user.model';
 
 @Component({
   selector: 'app-login',
@@ -40,8 +41,13 @@ export class LoginComponent implements OnInit {
       email: this.loginForm.value.email,
       password: this.loginForm.value.password,
       remember: this.loginForm.value.remember,
-    }).subscribe((result) => {
-      this.router.navigate(['/user']);
+    }).subscribe((result: User) => {
+      console.log('ROLE: ', result.role);
+      if (result.role === 'admin') {
+        this.router.navigate(['/admin']);
+      } else {
+        this.router.navigate(['/user']);
+      }
     });
   }
 

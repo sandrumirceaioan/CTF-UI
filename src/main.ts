@@ -10,6 +10,7 @@ import { IonicModule } from '@ionic/angular';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { RequestInterceptor } from './app/shared/interceptors/request.interceptor';
 import { AuthGuard } from './app/shared/guards/auth.guard';
+import { RoleGuard } from './app/shared/guards/role.guard';
 
 if (environment.production) {
   enableProdMode();
@@ -20,7 +21,8 @@ bootstrapApplication(AppComponent, {
     { provide: AppService, useClass: AppService },
     { provide: environment.BACKEND_URL, useValue: environment.BACKEND_URL },
     { provide: HTTP_INTERCEPTORS, useClass: RequestInterceptor, multi: true },
-    AuthGuard,
+    AuthGuard, 
+    RoleGuard,
     importProvidersFrom(
       RouterModule.forRoot(APP_ROUTES),
       IonicModule.forRoot(),

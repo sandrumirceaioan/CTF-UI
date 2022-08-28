@@ -1,0 +1,45 @@
+<div class="admin-wrapper">
+    <ion-header>
+        <ion-toolbar color="primary">
+            <ion-item color="primary" slot="start">
+                <a [routerLink]="'/admin'" class="logo">
+                    <img src="../../assets/images/ctf-logo-white-medium.png" alt="CTF ADMIN LOGO" />
+                </a>
+            </ion-item>
+            <ion-buttons slot="start">
+                <ion-menu-button color="light"></ion-menu-button>
+            </ion-buttons>
+            <ion-buttons slot="end" (click)="logout()">
+                <ion-button color="light">
+                    <ion-icon slot="icon-only" name="exit-outline"></ion-icon>
+                </ion-button>
+            </ion-buttons>
+        </ion-toolbar>
+    </ion-header>
+    <ion-content class="ion-padding">
+        <router-outlet id="admin"></router-outlet>
+    </ion-content>
+
+    <ion-menu side="start" contentId="admin">
+        <ion-header class="ion-padding-horizontal">
+            <a [routerLink]="'/admin'" color="primary" class="logo">
+                <img src="../../assets/images/ctf-logo-white-medium.png" alt="CTF ADMIN LOGO" />
+            </a>
+            <ion-text color="light">
+                <h4>CTF ADMIN </h4>
+            </ion-text>
+
+        </ion-header>
+        <ion-content class="menu-content" color="primary">
+            <ion-list *ngFor="let pages of navigationList" class="ion-no-padding ion-no-margin">
+                <ion-menu-toggle auto-hide="true">
+                    <ion-item (click)="goToPage(pages.url)" routerDirection="forward" color="primary" expand="full" class="ion-no-margin" class="nav-item" button="true">
+                        <ion-icon [name]="pages.icon" slot="start"></ion-icon>
+                        <ion-text color="light">{{pages.title}}</ion-text>
+                    </ion-item>
+
+                </ion-menu-toggle>
+            </ion-list>
+        </ion-content>
+    </ion-menu>
+</div>
