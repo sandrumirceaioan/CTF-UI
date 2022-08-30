@@ -1,0 +1,14 @@
+.table-header {
+    box-shadow: none !important;
+
+    ion-list {
+        width: 120px;
+
+        ion-item {
+            
+            ion-select {
+                width: 100%;
+            }
+        }
+    }
+}

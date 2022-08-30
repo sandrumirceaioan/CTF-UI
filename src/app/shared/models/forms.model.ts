@@ -25,3 +25,15 @@ export interface RegisterForm {
     password: FormControl<string | null>;
     passwordRepeat: FormControl<string | null>;
 }
+
+export interface CategoryForm {
+    url: FormControl<string | null>;
+    name: FormControl<string | null>;
+    summary: FormControl<string | null>;
+    description: FormControl<string | null>;
+    thumbnail?: FormControl<File | null>;
+    banner?: FormControl<string | null>;
+    parent?: FormControl<string | null>;
+    parentName?: FormControl<string | null>;
+    status?: FormControl<boolean>;
+}

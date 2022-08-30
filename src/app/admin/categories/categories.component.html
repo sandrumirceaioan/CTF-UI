@@ -1,1 +1,94 @@
-<p>categories works!</p>
+<ion-card color="light" class="page-header">
+    <ion-card-header>
+        <ion-toolbar color="none">
+            <ion-title>
+                <h3>{{title}}</h3>
+            </ion-title>
+        </ion-toolbar>
+    </ion-card-header>
+</ion-card>
+
+<ion-card class="table-header">
+    <ion-grid>
+        <ion-row>
+            <ion-col size="6">
+                <ion-list lines="full">
+                    <ion-item slot="end">
+                        <ion-select interface="popover" placeholder="Select" [(ngModel)]="entries"
+                            (ionChange)="entriesChange($event)">
+                            <ion-select-option [value]="10">10</ion-select-option>
+                            <ion-select-option [value]="25">25</ion-select-option>
+                            <ion-select-option [value]="50">50</ion-select-option>
+                        </ion-select>
+                    </ion-item>
+                </ion-list>
+            </ion-col>
+            <ion-col>
+                <ion-item lines="full" class="ion-float-right">
+                    <ion-label position="floating">Search</ion-label>
+                    <ion-input type="text" name="email" type="text" (getInputElement)="searchEvent($event)"
+                        #searchInput>
+                    </ion-input>
+                </ion-item>
+            </ion-col>
+        </ion-row>
+    </ion-grid>
+</ion-card>
+
+<ion-card class="table-body">
+    <ngx-datatable class="material expandable table-body" [rows]="categories"
+        [limit]="entries != -1 ? entries : undefined" [columnMode]="'force'" [headerHeight]="50" [footerHeight]="50"
+        [rowHeight]="'auto'" [externalSorting]="true" [externalPaging]="true" [count]="categoriesService.page.count"
+        [offset]="categoriesService.page.offset" [limit]="categoriesService.page.limit" (page)="pageCallback($event)"
+        (sort)="sortCallback($event)">
+
+        <ngx-datatable-column name="Thumbnail" prop="thumbnail" [flexGrow]="1" [minWidth]="50" [sortable]="false">
+            <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                <ion-thumbnail *ngIf="row.thumbnail">
+                    <img [src]="row.thumbnail">
+                </ion-thumbnail>
+
+                <ion-thumbnail *ngIf="!row.thumbnail">
+                    <img src="../../../assets/images/no-thumbnail.png" alt="category thumbnail">
+                </ion-thumbnail>
+            </ng-template>
+        </ngx-datatable-column>
+
+        <ngx-datatable-column name="Name" prop="name" [flexGrow]="2" [minWidth]="100">
+            <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                <ion-text>{{row.name}}</ion-text>
+            </ng-template>
+        </ngx-datatable-column>
+
+        <ngx-datatable-column name="Url" prop="url" [flexGrow]="2" [minWidth]="100" *ngIf="!isMobile">
+            <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                <ion-text>{{row.url}}</ion-text>
+            </ng-template>
+        </ngx-datatable-column>
+
+        <ngx-datatable-column name="Status" prop="status" [flexGrow]="2" [minWidth]="70" *ngIf="!isMobile">
+            <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                <ion-text *ngIf="row.status" color="success">Active</ion-text>
+                <ion-text *ngIf="!row.status" color="danger">Inactive</ion-text>
+            </ng-template>
+        </ngx-datatable-column>
+
+        <ngx-datatable-column name="Updated" prop="updatedAt" [flexGrow]="2" [minWidth]="100" *ngIf="!isMobile">
+            <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                <span class="right-column">
+                    <ion-text>{{row.updatedAt | date}}</ion-text>
+                </span>
+            </ng-template>
+        </ngx-datatable-column>
+
+        <ngx-datatable-column name="Actions" [flexGrow]="1" [minWidth]="50" [sortable]="false">
+            <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                <ion-fab slot="end">
+                    <ion-fab-button color="primary" size="small" [routerLink]="row._id">
+                        <ion-icon color="tertiary" name="create"></ion-icon>
+                    </ion-fab-button>
+                </ion-fab>
+            </ng-template>
+        </ngx-datatable-column>
+    </ngx-datatable>
+</ion-card>

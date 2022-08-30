@@ -6,7 +6,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NavController } from '@ionic/angular';
 import { AdminService } from './admin.service';
 import { AuthService } from '../shared/services/auth.service';
-
+import { NgxSpinnerModule } from 'ngx-spinner';
+import { EditCategoryResolve } from './categories/edit-category/edit-category.resolve';
 
 @Component({
   selector: 'app-user',
@@ -16,7 +17,8 @@ import { AuthService } from '../shared/services/auth.service';
     IonicModule,
     RouterModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    NgxSpinnerModule
   ],
   templateUrl: './admin.component.html',
   styleUrls: ['./admin.component.scss']
