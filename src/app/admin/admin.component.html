@@ -9,8 +9,9 @@
             <ion-buttons slot="start">
                 <ion-menu-button color="light"></ion-menu-button>
             </ion-buttons>
-            <ion-buttons slot="end" (click)="logout()">
-                <ion-button color="light">
+            <ion-buttons slot="end">
+                <p *ngIf="user" class="ion-padding-horizontal"><small>{{user.email}}</small></p>
+                <ion-button color="light" (click)="logout()">
                     <ion-icon slot="icon-only" name="exit-outline"></ion-icon>
                 </ion-button>
             </ion-buttons>

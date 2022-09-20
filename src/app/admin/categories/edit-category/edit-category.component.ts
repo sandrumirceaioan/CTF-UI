@@ -59,7 +59,9 @@ export class EditCategoryComponent implements OnInit, OnDestroy {
       status: new FormControl(this.category.status, [Validators.required]),
     });
 
-    this.categoryForm.get('status').setValue(this.category.status);
+    this.getInitialStatus();
+
+    console.log(this.categoryForm.value);
   }
 
   getInitialStatus() {

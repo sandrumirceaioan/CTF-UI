@@ -7,7 +7,7 @@ import { NavController } from '@ionic/angular';
 import { AdminService } from './admin.service';
 import { AuthService } from '../shared/services/auth.service';
 import { NgxSpinnerModule } from 'ngx-spinner';
-import { EditCategoryResolve } from './categories/edit-category/edit-category.resolve';
+import { User } from '../shared/models/user.model';
 
 @Component({
   selector: 'app-user',
@@ -25,6 +25,7 @@ import { EditCategoryResolve } from './categories/edit-category/edit-category.re
 })
 export class AdminComponent implements OnInit {
   navigationList: any;
+  user: User;
 
   constructor(
     private router: Router,
@@ -33,9 +34,11 @@ export class AdminComponent implements OnInit {
     private authService: AuthService
   ) {
     this.navigationList = this.adminService.getPages();
+    this.user = this.authService.user;
   }
 
   ngOnInit(): void {
+
   }
 
   createSideMenu() {

@@ -31,7 +31,7 @@ bootstrapApplication(AppComponent, {
       RouterModule.forRoot(APP_ROUTES),
       IonicModule.forRoot(),
       HttpClientModule,
-      NgxSpinnerModule.forRoot({ type: 'square-jelly-box' }),
+      NgxSpinnerModule.forRoot({ type: 'ball-clip-rotate' }),
     ),
     EditCategoryResolve
   ]

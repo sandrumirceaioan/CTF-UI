@@ -16,7 +16,8 @@ const httpOptions = {
 })
 export class AuthService {
     apiPath: string = environment.BACKEND_URL;
-    user$ = new Subject();
+    user$: Subject<User> = new Subject();
+    user: User;
 
     private readonly ctf_at = "ctf_at";
     private readonly ctf_rt = "ctf_rt";
@@ -57,6 +58,7 @@ export class AuthService {
     verify(): Observable<any> {
         return this.http.post(`${this.apiPath}/auth/local/verify`, {}, httpOptions).pipe(
             tap((result: User) => {
+                this.user = result;
                 this.user$.next(result);
                 return result;
             }),
@@ -136,6 +138,7 @@ export class AuthService {
     }
 
     private doLoginUser(user?, tokens?) {
+        this.user = user;
         this.user$.next(user);
         this.storeTokens(tokens);
     }

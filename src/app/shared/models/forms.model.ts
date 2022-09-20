@@ -35,5 +35,5 @@ export interface CategoryForm {
     banner?: FormControl<string | null>;
     parent?: FormControl<string | null>;
     parentName?: FormControl<string | null>;
-    status?: FormControl<boolean>;
+    status?: FormControl<boolean | null>;
 }
